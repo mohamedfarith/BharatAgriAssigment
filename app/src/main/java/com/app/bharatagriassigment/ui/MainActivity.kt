@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -76,7 +77,7 @@ class MainActivity : AppCompatActivity(), NewsListAdapter.ListItemClickListener 
                         Resource.Status.ERROR -> {
                             hideLoadingIndicator()
                             if (::adapter.isInitialized) adapter.removeLoader()
-                            showErrorMessage()
+                            Toast.makeText(this, "Api limit reached", Toast.LENGTH_SHORT).show()
                         }
                         Resource.Status.LOADING -> {
                             showLoadingIndicator()
@@ -143,7 +144,7 @@ class MainActivity : AppCompatActivity(), NewsListAdapter.ListItemClickListener 
         /* if adapter is initialized then already some items are present in the recycler
         so updating the content else set adapter*/
         if (::adapter.isInitialized && page != 1) {
-            if (page >= data?.totalResults ?: 0) {
+            if (adapter.itemList.size >= data?.totalResults ?: 0) {
                 isLastPage = true
             }
             val prevSize = adapter.itemList.size
