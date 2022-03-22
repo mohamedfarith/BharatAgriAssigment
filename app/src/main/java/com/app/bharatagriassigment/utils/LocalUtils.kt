@@ -9,6 +9,7 @@ import com.app.bharatagriassigment.R
 
 object LocalUtils {
 
+    //checks whether the network connection is enabled
     fun isOnline(context: Context?): Boolean {
         context?.let {
             val connectivityManager =

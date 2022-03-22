@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity(), NewsListAdapter.ListItemClickListener 
     private fun initViews() {
         registerAndObserveLiveData()
         fetchNewsArticles(page)
+        //adding scroll listener to handle lazy loading
         binding.recycler.addOnScrollListener(object :
             PageScrollListener(binding.recycler.layoutManager as LinearLayoutManager) {
             override fun loadMoreItems() {
@@ -61,6 +62,7 @@ class MainActivity : AppCompatActivity(), NewsListAdapter.ListItemClickListener 
     }
 
     private fun registerAndObserveLiveData() {
+        //registering view model and accessing it with Repository pattern
         viewModel = ViewModelProvider(this)[MainActViewModel::class.java]
         MainRepository.getInstance(viewModel)
             .getNewsLiveData()
@@ -88,9 +90,9 @@ class MainActivity : AppCompatActivity(), NewsListAdapter.ListItemClickListener 
     }
 
     private fun fetchNewsArticles(pageNumber: Int) {
-
         if (LocalUtils.isOnline(binding.root.context)) {
             showLoadingIndicator()
+            //providing a delay to get good user experience
             Handler(Looper.getMainLooper()).postDelayed({
                 MainRepository.getInstance(viewModel)
                     .fetchNewsArticles(Constants.DEFAULT_PAGE_LIMIT, pageNumber)
@@ -116,8 +118,8 @@ class MainActivity : AppCompatActivity(), NewsListAdapter.ListItemClickListener 
             })
     }
 
+    //show loading indicator
     private fun showLoadingIndicator() {
-        //show loading indicator
         if (!isLoading)
             binding.loadingIndicator.visibility = View.VISIBLE
         else if (!isLastPage) {
@@ -126,8 +128,8 @@ class MainActivity : AppCompatActivity(), NewsListAdapter.ListItemClickListener 
         }
     }
 
+    //hide loading indicator
     private fun hideLoadingIndicator() {
-        //hide loading indicator/
         if (!isLoading)
             binding.loadingIndicator.visibility = View.INVISIBLE
         else if (!isLastPage) {
@@ -138,14 +140,20 @@ class MainActivity : AppCompatActivity(), NewsListAdapter.ListItemClickListener 
     }
 
     private fun bindData(data: NewsArticle?) {
+        /* if adapter is initialized then already some items are present in the recycler
+        so updating the content else set adapter*/
         if (::adapter.isInitialized && page != 1) {
             if (page >= data?.totalResults ?: 0) {
                 isLastPage = true
             }
             val prevSize = adapter.itemList.size
             adapter.itemList = data?.articles ?: ArrayList()
-            adapter.notifyItemRangeChanged(prevSize - 1, adapter.itemList.size - 1)
+            //to maintain order and to remove duplicates used linked hashsets
+            adapter.itemList = ArrayList(LinkedHashSet(adapter.itemList))
+            adapter.notifyItemRangeChanged(prevSize, adapter.itemList.size - 1)
         } else {
+            //to maintain order and to remove duplicates used linked hashset
+            data?.articles = ArrayList(LinkedHashSet(data?.articles ?: ArrayList()))
             adapter = NewsListAdapter(data?.articles ?: ArrayList(), this)
             binding.adapter = adapter
         }
@@ -153,6 +161,7 @@ class MainActivity : AppCompatActivity(), NewsListAdapter.ListItemClickListener 
     }
 
     override fun onClick(results: NewsArticle.Article, view: View) {
+        //opening the details screen activity with scene transition animation
         val options = ActivityOptions.makeSceneTransitionAnimation(this, view, "image")
         val intent = Intent(this, ArticleDetailActivity::class.java)
         intent.putExtra("ARTICLE_DATA", results)

@@ -34,13 +34,7 @@ class MainRepository {
 
     }
 
-    fun setArticleLiveData(newsArticle: NewsArticle.Article) {
-        viewModel.setArticleLiveData(newsArticle)
-    }
 
-    fun getArticleLiveData(): MutableLiveData<NewsArticle.Article> {
-        return viewModel.getArticleData()
-    }
 
 
 }

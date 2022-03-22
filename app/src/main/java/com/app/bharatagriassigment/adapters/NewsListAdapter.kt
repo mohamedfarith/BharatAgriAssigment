@@ -62,6 +62,7 @@ class NewsListAdapter(
         return itemList.size;
     }
 
+    //add loader to adapter
     fun showLoader() {
         val item = NewsArticle.Article()
         item.type = "loader"
@@ -69,9 +70,10 @@ class NewsListAdapter(
         notifyItemChanged(itemList.size - 1)
     }
 
+    //remove loader from adapter
     fun removeLoader() {
         for (index in 0 until itemList.size) {
-            if (itemList[index].type == "loader") {
+            if (itemList[index].type.equals("loader")) {
                 itemList.remove(itemList[index])
                 notifyItemChanged(index)
                 break;

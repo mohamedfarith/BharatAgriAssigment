@@ -10,13 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MainActViewModel() : ViewModel() {
+class MainActViewModel : ViewModel() {
     private val livedata: MutableLiveData<Resource<NewsArticle>> by lazy {
         MutableLiveData<Resource<NewsArticle>>()
-    }
-
-    private val articleLiveData: MutableLiveData<NewsArticle.Article> by lazy {
-        MutableLiveData<NewsArticle.Article>()
     }
 
     private var newsData: Resource<NewsArticle>? = null
@@ -53,14 +49,6 @@ class MainActViewModel() : ViewModel() {
             }
 
         }
-    }
-
-    fun setArticleLiveData(article: NewsArticle.Article) {
-        articleLiveData.value = article
-    }
-
-    fun getArticleData(): MutableLiveData<NewsArticle.Article> {
-        return articleLiveData
     }
 
 }

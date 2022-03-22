@@ -32,6 +32,7 @@ object Retrofit {
 
 
     class HttpInterceptor : Interceptor {
+        //intercepting and adding headers, here it is API KEY
         override fun intercept(chain: Interceptor.Chain): Response {
             val request = chain.request()
                 .newBuilder().addHeader(Constants.API_NAME, Constants.API_KEY).build()
