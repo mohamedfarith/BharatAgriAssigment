@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">BharatAgriAssigment</string>
+    <string name="internet_connection_error"> Please connect to internet and try again</string>
+    <string name="connection_error">Internet connection error</string>
+</resources>
